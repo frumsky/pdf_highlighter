@@ -11,14 +11,15 @@ from pathlib import Path
 from pdfminer.pdfparser import PDFSyntaxError
 from multiprocessing import Pool
 
-def get_search_hits(patterns, document):
-    doc_name = document.split('/')[-1].replace('.pdf', '')
 
+def get_search_hits(pattern_sets, document):
+    doc_name = document.split('/')[-1].replace('.pdf', '')
+    
     strings = set()
 
     text = convert_pdf_to_txt(document)
     
-    for pattern in patterns:
+    for pattern in pattern_sets:
         match = re.finditer(pattern, text)
         match = list(match)
 
@@ -32,6 +33,8 @@ def get_search_hits(patterns, document):
 
         matches = [i.group() for i in match]
         for i in list(matches) : strings.add((i))
+    
+
 
     return list(strings)
 
@@ -79,8 +82,6 @@ def wrapper(tup):
     except (UnboundLocalError, PDFSyntaxError) as e:
         pass
 
-
-
 def run_highlighter(st_path, dir):
     files = os.listdir(dir)
     files = [(st_path, os.path.join(dir, i)) for i in files]
@@ -91,8 +92,8 @@ def run_highlighter(st_path, dir):
         pool.join()
 
 if __name__ == '__main__':
-    search_file = '/Users/frankchlumsky/Desktop/Desktop - MacBook Pro (2)/Work/Novartis/Tools/Portugal/Products_Portugal.txt'
-    documents_path = '/Users/frankchlumsky/Downloads/TEST'
+    search_file = '/Users/frankchlumsky/Downloads/Taiwan_Export_14/Native/Search/terms.txt'
+    documents_path = '/Users/frankchlumsky/Downloads/Taiwan_Export_14/Native/FLD0001'
     run_highlighter(search_file, documents_path)
 
 

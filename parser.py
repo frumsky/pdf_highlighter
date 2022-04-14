@@ -3,7 +3,7 @@ import re2 as re
 import itertools
 
 
-queries = []
+
 prox_pattern = r'( [Ww]/[0-9] | [Ww]/[0-9][0-9] )'
 
 
@@ -11,6 +11,7 @@ def remove_special(line):
     line = line.strip()
     line = re.sub(r'\"|\(|\)', '', line)
     line = re.sub(r'(\||\+|\/|\.)', r'[\1]', line)
+    line = re.sub(r' OR ', '|', line)
     line = line.strip()
 
     return line
@@ -50,12 +51,14 @@ def handle_prox(line):
     
 
 def parse_queries(txt_file):
+    queries = []
     with open(txt_file, 'r', encoding='utf-8') as r:
         lines = r.readlines()
         for line in lines:
             queries.append(line)
 
     for index, query in enumerate(queries):
+
         try:
             if re.search(prox_pattern, query):
                 queries[index] = r'\b' + handle_prox(query) + r'\b'
@@ -68,5 +71,7 @@ def parse_queries(txt_file):
     for index, query in enumerate(queries):
         queries[index] = re.compile(query, flags=re.I + re.M)
 
+    for query in queries:
+        print(query)
     return [query for query in queries]
         

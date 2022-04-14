@@ -1,0 +1,65 @@
+"reação adversa ao medicamento"
+advers*
+"efeito secundário"
+"efeitos secundários"
+"efeito secundário"
+"overdose medicamentosa"
+“sobredosagem medicamentosa”
+(overdos* OR sobredosagem*) W/2 medicament*)
+(overdos* OR sobredosagem*)
+"abuso de medicamentos"
+abus*
+"abuso de medicamentos"
+"abuso de substâncias"
+abus*
+"gravidez"
+gravid*
+"complicações na gravidez"
+"aleitamento"
+"amamentação"
+("leite humano" W/99 "secreção")
+"fertilidade"
+"reprodução"
+"feto"
+"embrião"
+terat*
+"eficácia do medicamento"
+"retirada do medicamento"
+"erro de medicação"
+"morte"
+mort*
+fatal*
+"interações medicamentosas"
+"interação medicamentosa"
+"carcinogenicidade"
+carcinogéneo*
+mutagénico*
+"utilização de medicamentos fora do rótulo"
+"exposição profissional"
+"toxicidade"
+tóxic*
+farmacotox*
+neurotox*
+cardiotox*
+nefrotox*
+imunotox*
+hepatotox*
+citotox*
+imunocitotox*
+"intoxicação"
+"doença congénita"
+"falha no tratamento medicamentoso"
+"relato de caso"
+"relatos de casos"
+"exposição ambiental"
+"contraindicação de tratamento"
+"contraindicação de medicamentos"
+"lesão"
+suicídio
+"envenenamento"
+"tolerância a medicamentos"
+"falha no tratamento"
+"resistência medicamentosa"
+"distúrbios relacionados com substâncias"
+"falha no tratamento"
+"resistência medicamentosa"

@@ -1,0 +1,63 @@
+"adverse drug reaction"
+adverse
+"side effect"
+"side effects"
+"side effect"
+"drug overdose"
+overdos*
+"drug misuse"
+misus*
+"drug abuse"
+"substance abuse"
+abus*
+"pregnancy"
+pregnan*
+"pregnancy complications"
+"lactation"
+"breast feeding"
+("milk human" AND "secretion")
+"fertility"
+"reproduction"
+"fetus"
+"embryo"
+terat*
+"drug efficacy"
+"drug withdrawal"
+"medication error"
+"death"
+death*
+fatal*
+"drug interactions"
+"drug interaction"
+"carcinogenicity"
+carcinogen*
+mutagen*
+"off label drug use"
+"occupational exposure"
+"toxicity"
+toxic*
+pharmacotox*
+neurotox*
+cardiotox*
+nephrotox*
+immunotox*
+hepatotox*
+cytotox*
+immunocytotox*
+"intoxication"
+"congenital disorder"
+"drug treatment failure"
+"case report"
+"case reports"
+"environmental exposure"
+"treatment contraindication"
+"drug contraindication"
+"injury"
+suicide
+"poisoning"
+"drug tolerance"
+"treatment failure"
+"drug resistance"
+"substancerelated disorders"
+"treatment failure"
+"drug resistance"
