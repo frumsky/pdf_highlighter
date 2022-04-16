@@ -12,6 +12,7 @@ def remove_special(line):
     line = re.sub(r'\"|\(|\)', '', line)
     line = re.sub(r'(\||\+|\/|\.)', r'[\1]', line)
     line = re.sub(r' OR ', '|', line)
+    line = re.sub(r'\*', '\\S*', line)
     line = line.strip()
 
     return line
@@ -71,7 +72,5 @@ def parse_queries(txt_file):
     for index, query in enumerate(queries):
         queries[index] = re.compile(query, flags=re.I + re.M)
 
-    for query in queries:
-        print(query)
     return [query for query in queries]
         
