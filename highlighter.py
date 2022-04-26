@@ -18,23 +18,38 @@ def match_pattern(text, pattern, doc_name):
     match = list(match)
     if not match:
         return
-    print('\n')
-    print('Document: ', doc_name)
-    print('Pattern: ', pattern)
-    print('Match: ', match)
-    print('\n')
+    # print('\n')
+    # print('Document: ', doc_name)
+    # print('Pattern: ', pattern)
+    # print('Match: ', match)
+    # print('\n')
 
     matches = [i.group() for i in match]
     return list(matches)
+
+def convert_to_txt(document):
+    doc = fitz.open(document)
+    pages = [doc[i] for i in range(0, doc.page_count)]
+    get_page_text = lambda page : page.get_text().encode("utf8")
+    text_pages = list(map(get_page_text, pages))
+    text_pages = [i.decode('utf-8') for i in text_pages]
+
+    return ' '.join(text_pages)
+
+
+# convert_to_txt('/Users/frankchlumsky/Projects/Coding/Highlighter/tests/0021.pdf_HIGHLIGHTED.pdf')
+
 
 def get_search_hits(patterns, document):
     doc_name = document.split('/')[-1].replace('.pdf', '')
 
     start_time = datetime.now()
     print('Starting PDF conversion...')
-    text = convert_pdf_to_txt(document)
+    print('\n')
+    text = convert_to_txt(document)
     end_time = datetime.now() - start_time
     print(f'{doc_name} converted in {end_time} seconds')
+    print('\n')
 
     start_time = datetime.now()
     match_function = lambda x : match_pattern(text, x, doc_name)
@@ -44,7 +59,7 @@ def get_search_hits(patterns, document):
     match_sets = [sublist for sublist in match_sets if sublist]
     match_sets = list(set([match for sublist in match_sets for match in sublist if sublist]))
     end_time = datetime.now() - start_time
-    print(f'{len(match_sets)} terms returned in {end_time} seconds:')
+    print(f'{doc_name}: {len(match_sets)} terms returned in {end_time} seconds:')
     print(match_sets)
     print('\n')
 
@@ -72,17 +87,28 @@ def validate(page, term):
         print(e)
         print('\n')
 
-    print(f'{term} on page {page} took {datetime.now() - start_time} seconds to complete')
+    # print(f'{term} on page {page} took {datetime.now() - start_time} seconds to complete')
     return hit
 
 def highlight_hits(terms, document):
+    doc_name = document.split('/')[-1].replace('.pdf', '')
+    start_time = datetime.now()
+
     highlighted = False
     doc = fitz.open(document)
     pages = [doc[i] for i in range(0, doc.page_count)]
 
+    
+
     for page in pages:
+        start_time = datetime.now()
+
         find_hits = lambda x : validate(page, x)
         hits = list(map(find_hits, terms))
+
+        
+
+        start_time = datetime.now()
         for hit in hits:
             if not hit:
                 continue
@@ -90,6 +116,8 @@ def highlight_hits(terms, document):
             highlight = page.add_highlight_annot(hit)
             highlight.set_colors({"stroke":(0,1,0)})
             highlight.update()
+
+    print(f'{doc_name}: It took {datetime.now() - start_time} to validate and highlight hits on {len(pages)} pages\n')
         
 
     if highlighted:
@@ -98,14 +126,18 @@ def highlight_hits(terms, document):
 def wrapper(tup):
     query_file = tup[0]
     document = tup[1]
+    doc_name = document.split('/')[-1].replace('.pdf', '')
 
+    start = datetime.now()
     queries = parse_queries(query_file)
+
 
     try:
         search_terms = get_search_hits(queries, document)
         highlight_hits(search_terms, document)
     except (UnboundLocalError, PDFSyntaxError) as e:
         pass
+    print(f'{doc_name}: The entire process took {datetime.now() - start} second\n')
 
 def run_highlighter(st_path, dir):
     files = os.listdir(dir)
@@ -117,8 +149,8 @@ def run_highlighter(st_path, dir):
         pool.join()
 
 if __name__ == '__main__':
-    search_file = 'ema_adverse_pt.txt'
-    documents_path = 'tests'
+    search_file = '/Users/frankchlumsky/Projects/Coding/Highlighter/ema_adverse.txt'
+    documents_path = '/Users/frankchlumsky/Desktop/Desktop - MacBook Pro (2)/Work/Novartis/Taiwan/20220422/00_REPORTED/highlight'
     run_highlighter(search_file, documents_path)
 
 
