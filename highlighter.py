@@ -6,12 +6,19 @@ import os
 import fitz
 from tqdm import tqdm
 import time
+import csv
 from datetime import datetime
 import re2 as re
 from pathlib import Path
 from pdfminer.pdfparser import PDFSyntaxError
 from multiprocessing import Pool
 from concurrent import futures
+import sys
+
+
+search_file = '/Users/frankchlumsky/Projects/Coding/Highlighter/ema_adverse.txt'
+documents_path = '/Users/frankchlumsky/Downloads/Saudi_20220511_31/Native'
+sys.stdout = open(f'{documents_path}/highlight_log.txt', 'w')
 
 def match_pattern(text, pattern, doc_name):
     match = re.finditer(pattern, text)
@@ -91,27 +98,37 @@ def validate(page, term):
     return hit
 
 def highlight_hits(terms, document):
+    path = f"{'/'.join(document.split('/')[0:-1])}/Highlighted"
     doc_name = document.split('/')[-1].replace('.pdf', '')
+
     start_time = datetime.now()
 
     highlighted = False
     doc = fitz.open(document)
     pages = [doc[i] for i in range(0, doc.page_count)]
-
     
+    # with open(f'{path}/highlight_report.csv', 'a+', encoding='utf-8') as f:
+    #     writer = csv.writer(f)
+    
+    if not os.path.exists(path):
+        os.mkdir(path)
+    f = open(f'{path}/highlight_report.csv', 'a+', encoding='utf-8')
+    writer = csv.writer(f)
+    if os.path.getsize(f'{path}/highlight_report.csv') == 0:
+        writer.writerow(['Document', 'Page', 'Highlight'])
 
     for page in pages:
+        page_no = str(page).split(' ')[1]
         start_time = datetime.now()
-
         find_hits = lambda x : validate(page, x)
         hits = list(map(find_hits, terms))
 
-        
 
         start_time = datetime.now()
         for hit in hits:
             if not hit:
                 continue
+            writer.writerow([doc_name, page_no, [page.get_textbox(box) for box in hit]])
             highlighted = True
             highlight = page.add_highlight_annot(hit)
             highlight.set_colors({"stroke":(0,1,0)})
@@ -121,7 +138,9 @@ def highlight_hits(terms, document):
         
 
     if highlighted:
-        doc.save("%s_HIGHLIGHTED.pdf"%document, garbage=4, deflate=True, clean=True, ascii=True)
+        doc.save("%s/%s.pdf"% (path, doc_name), garbage=4, deflate=True, clean=True, ascii=True)
+
+    f.close()
 
 def wrapper(tup):
     query_file = tup[0]
@@ -144,14 +163,14 @@ def run_highlighter(st_path, dir):
     files = [(st_path, os.path.join(dir, i)) for i in files]
     
     with Pool(processes=3) as pool:
-        pool.map_async(wrapper, files)
+        pool.imap_unordered(wrapper, files)
         pool.close()
         pool.join()
 
 if __name__ == '__main__':
-    search_file = '/Users/frankchlumsky/Projects/Coding/Highlighter/ema_adverse.txt'
-    documents_path = '/Users/frankchlumsky/Desktop/Desktop - MacBook Pro (2)/Work/Novartis/Taiwan/20220422/00_REPORTED/highlight'
+
     run_highlighter(search_file, documents_path)
+    sys.stdout.close()
 
 
 
