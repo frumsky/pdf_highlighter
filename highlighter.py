@@ -16,8 +16,8 @@ from concurrent import futures
 import sys
 
 
-search_file = '/Users/frankchlumsky/Projects/Coding/Highlighter/ema_adverse.txt'
-documents_path = '/Users/frankchlumsky/Downloads/Saudi_20220511_31/Native'
+search_file = 'ema_adverse_fr.txt'
+documents_path = '/Users/frankchlumsky/Desktop/Desktop - MacBook Pro (2)/Work/Novartis/Franc_Africa/20220518/Highlighted'
 sys.stdout = open(f'{documents_path}/highlight_log.txt', 'w')
 
 def match_pattern(text, pattern, doc_name):

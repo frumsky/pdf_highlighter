@@ -1,0 +1,137 @@
+"adverse drug reaction"
+adverse
+"side effect"
+"side effects"
+"side effect"
+"drug overdose"
+overdos*
+"drug misuse"
+misus*
+"drug abuse"
+"substance abuse"
+abus*
+"pregnancy"
+pregnan*
+"pregnancy complications"
+"lactation"
+"breast feeding"
+("milk human" AND "secretion")
+"fertility"
+"reproduction"
+"fetus"
+"embryo"
+terat*
+"drug efficacy"
+"drug withdrawal"
+"medication error"
+"death"
+death*
+fatal*
+"drug interactions"
+"drug interaction"
+"carcinogenicity"
+carcinogen*
+mutagen*
+"off label drug use"
+"occupational exposure"
+"toxicity"
+toxic*
+pharmacotox*
+neurotox*
+cardiotox*
+nephrotox*
+immunotox*
+hepatotox*
+cytotox*
+immunocytotox*
+"intoxication"
+"congenital disorder"
+"drug treatment failure"
+"case report"
+"case reports"
+"environmental exposure"
+"treatment contraindication"
+"drug contraindication"
+"injury"
+suicide
+"poisoning"
+"drug tolerance"
+"treatment failure"
+"drug resistance"
+"substancerelated disorders"
+"treatment failure"
+"drug resistance"
+("réaction* *médicament* indésirable*" OR "réaction* *médicament* néfaste*" OR "réaction* *médicament* négative*" OR "réaction* *médicament* secondaire*") 
+(négatif* OR néfaste or indésirable*) 
+("effet* indésirable*" OR "effet* néfaste*" OR "effet* négati*" OR "effet* secondaire*") 
+("overdose* médicament*")
+("surdosage* médicament*") 
+("overdose* or surdosage*") 
+(abus* or mauvaise* and utilisation*) W/1 médicament* 
+(abus* W/1 médicament*) 
+(abus* W/1 substance*) 
+(abus*) 
+("grossesse*") 
+("enceinte* or gravide*") 
+("complications* grossesse*") 
+("lactation*") 
+("allaitement*") 
+("lait* humain*" AND secrétion*) 
+("fertilité*") 
+("reproduction*") 
+("fœtus*") 
+("embryon*") 
+("térat*") 
+("efficacité* médicament*") 
+"retrait* médicament*"
+"sevrage* médicament*"
+"arrêt* médicament*"
+("erreur* médicament*") 
+"mort*
+décès*"
+"fatal*
+mortel*"
+("interactions* médicament*") 
+("interaction* médicament*") 
+"carcinogénicité* 
+cancérogénicité*"
+"carcinogène*
+cancérigène*"
+("mutagèn*") 
+("utilisation* médicament* hors*" W/1 *autorisation* W/2 mise* W/2 marché*) 
+("exposition* professionnel")
+("risque* professionnel*") 
+("toxicité*") 
+("toxique*") 
+("pharmacotox*") 
+("neurotox*") 
+("cardiotox*") 
+("néphrotox*") 
+("immunotox*") 
+("hépatotox*") 
+("cytotox*") 
+("immunocytotox*") 
+"intoxication* 
+empoisonnement*"
+(trouble* or maladie*) W/1 congénita* 
+("échec* traitement* médicament*") 
+"cahier* d'observation"
+(rapport* W/2 (cas* *observation*)) 
+"cahier* d'observation"
+(rapport* W/2 (cas* *observation*)) 
+(exposition* or risque*) W/1 environnementa* 
+"contre-indication*" W/1 (*traitement*) 
+"contre-indication*" W/1 *médicament*
+("contre-indication* *médicament*") 
+("blessure* or lésion* or préjudice*") 
+("suicide*") 
+("empoisonnement* or intoxication*") 
+("tolérance* médicament*") 
+("échec* *traitement*")
+("échec* *médicament*") 
+("résistance* médicament*") 
+(troubles* or maladies*) W/2 lié* W/2 substance*
+("échec* *traitement*")
+("échec* *médicament*") 
+("résistance* médicament*") 
+("résistance* médicament*")
