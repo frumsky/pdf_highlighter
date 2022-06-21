@@ -15,10 +15,20 @@ from concurrent import futures
 import sys
 
 
+
 class Highlight_Set:
-    def __init__(self, txt_doc, color):
-        self.queries = parse_queries(txt_doc)
+    def __init__(self, txt_doc, color, parse=True):
+        if parse:
+            self.queries = parse_queries(txt_doc)
+        else:
+            self.queries = list(self.read_txt(txt_doc))
         self.color = color
+
+    def read_txt(self, doc):
+        with open(doc, 'r', encoding='utf-8') as r:
+            lines = r.readlines()
+            return [line.replace('\n', '') for line in lines]
+
 
 class Highlighter:
     def __init__(self, sets, path):
@@ -26,6 +36,12 @@ class Highlighter:
         self.path = path
         self.files = os.listdir(path)
         self.files = [os.path.join(path, i) for i in self.files]
+        self.highlight_colors = {
+            'Yellow': (1,1,0),
+            'Green': (0,1,0),
+            'Blue': (0,0,1),
+            'Red': (1,0,0)
+        }
 
     def match_pattern(self, text, pattern):
         match = re.finditer(pattern, text)
@@ -42,34 +58,22 @@ class Highlighter:
         get_page_text = lambda page : page.get_text().encode("utf8")
         text_pages = list(map(get_page_text, pages))
         text_pages = [i.decode('utf-8') for i in text_pages]
+        # with open(f'{document}.txt', 'w', encoding='utf-8') as f:
+        #     for i in text_pages:
+        #         f.write(i)
+        #         f.write('\n')
 
         return ' '.join(text_pages)
 
 
     def get_search_hits(self, highlight_set, text):
-        # doc_name = document.split('/')[-1].replace('.pdf', '')
-
-        # start_time = datetime.now()
-        # print('Starting PDF conversion...')
-        # print('\n')
-        # end_time = datetime.now() - start_time
-        # print(f'{doc_name} converted in {end_time} seconds')
-        # print('\n')
-
-        start_time = datetime.now()
         match_function = lambda x : self.match_pattern(text, x)
         with futures.ThreadPoolExecutor(max_workers=5) as executor:
             match_sets = list(executor.map(match_function, highlight_set.queries))
-
-        # print(match_sets)
             
         match_sets = [sublist for sublist in match_sets if sublist]
         match_sets = list(set([match for sublist in match_sets for match in sublist if sublist]))
         match_sets = [(match, highlight_set.color) for match in match_sets]
-        end_time = datetime.now() - start_time
-        # print(f'{doc_name}: {len(match_sets)} terms returned in {end_time} seconds:')
-        # print(match_sets)
-        # print('\n')
 
         return match_sets
 
@@ -77,17 +81,21 @@ class Highlighter:
     def validate(self, page, term):
 
         search_term = term[0]
-        pattern = f'\\b{search_term}\\b'
+        pattern = f'\\b{re.escape(search_term)}\\b'
         pattern = re.compile(pattern)
         start_time = datetime.now()
-
+        hits = []
         try:
             hit = page.search_for(search_term)
-            for i in hit:
+            for index, i in enumerate(hit):
                 box = page.get_textbox(i+(-10,-10,10,10))
                 if re.search(pattern, box):
+                    hits.append(i)
                     continue
-                hit.remove(i)
+                else:
+                    hit.pop(index)
+
+            return (hits, term[1])
 
 
         except TypeError as e:
@@ -96,7 +104,7 @@ class Highlighter:
             print(e)
             print('\n')
 
-        return (hit, term[1])
+        
 
 
     def highlight_hits(self, terms, document):
@@ -126,18 +134,23 @@ class Highlighter:
             hits = list(map(find_hits, terms))
 
             start_time = datetime.now()
+
             for hit, color in hits:
                 if not hit:
                     continue
                 writer.writerow([doc_name, page_no, [page.get_textbox(box) for box in hit]])
                 highlighted = True
-                highlight = page.add_highlight_annot(hit)
-                if color == 'Green':
-                    highlight.set_colors({"stroke":(0,1,0)})
+                if color == 'Redact':
+                    quads = [i.quad for i in hit]
+                    add_redactions = lambda x : page.add_redact_annot(x, fill=(0,0,0))
+                    list(map(add_redactions, quads))
+                    page.apply_redactions()
+                    continue
+                highlights = list(map(page.add_highlight_annot, [i.quad for i in hit]))
+                for highlight in highlights:
+                    highlight.set_colors({"stroke": self.highlight_colors[color]})
                     highlight.update()
-                elif color == 'Yellow':
-                    highlight.set_colors({"stroke":(1,1,0)})
-                    highlight.update()
+
 
         print(f'{doc_name}: It took {datetime.now() - start_time} to validate and highlight hits on {len(pages)} pages\n')
             
@@ -176,11 +189,13 @@ class Highlighter:
 if __name__ == '__main__':
     freeze_support()
     highlight_fields = [
-        Highlight_Set('ema_adverse_pt.txt', 'Yellow'),
-        Highlight_Set('test_hits.txt', 'Green')
+        Highlight_Set('/Users/frankchlumsky/Downloads/PDF/Search_terms.txt', 'Yellow')
+        # Highlight_Set('test_hits.txt', 'Red'),
+        # Highlight_Set('redact_test.txt', 'Redact'),
+        # Highlight_Set('regex_test.txt', 'Blue', parse=False)
     ]
 
-    highlighter = Highlighter(highlight_fields, 'test_folder')
+    highlighter = Highlighter(highlight_fields, '/Users/frankchlumsky/Downloads/PDF/00001')
     highlighter.run_highlighter()
     
 
